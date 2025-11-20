@@ -4,25 +4,13 @@
 // https://opensource.org/licenses/MIT
 
 
-
-import { Engine } from './Core/Engine';
+import { GameSetup } from "./Game/GameSetup";
 import './styles.css'
 
 const App = async () => {
-  const gameDiv = document.querySelector<HTMLDivElement>('#game');
-
-  if (!gameDiv) {
-    throw new Error('App div not found');
-  }
-
-  const engine = new Engine(
-    "Test",
-    "1.0.0",
-    "KibaOfficial"
-  );
-  await engine.initialize();
-  engine.start();
-
+  const game = new GameSetup("KioECS Demo", "0.1.0", "KibaOfficial");
+  await game.initialize();
+  game.start();
 }
 
 App();

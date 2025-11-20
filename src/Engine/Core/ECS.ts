@@ -6,7 +6,7 @@
 import { ComponentMap } from "../Components/Component";
 import { Entity } from "../Entities/Entity";
 import { System } from "../Systems/System";
-import { logger } from "../utils/utils";
+import { logger } from "../../utils/utils";
 
 export class ECS {
   // Internal ECS States
@@ -14,6 +14,7 @@ export class ECS {
   private entities: Set<Entity> = new Set();
   private components: Map<string, Map<Entity, any>> = new Map();
   private systems: System[] = [];
+  private resources: Map<string, any> = new Map();
 
   createEntity(): Entity {
     const id = this.nextEntityId++;
@@ -28,10 +29,10 @@ export class ECS {
   ): void {
     if (!this.components.has(componentType)) {
       this.components.set(componentType, new Map());
-      logger("info", `Initialized component storage for type: ${componentType}`);
+      logger("debug", `Initialized component storage for type: ${componentType}`);
     }
     this.components.get(componentType)!.set(entity, data);
-    logger("info", `Added component ${componentType} to entity ${entity}`);
+    logger("debug", `Added component ${componentType} to entity ${entity}`);
   }
 
   getComponent<K extends keyof ComponentMap>(
@@ -41,9 +42,16 @@ export class ECS {
     return this.components.get(componentType)?.get(entity);
   }
 
+  hasComponent<K extends keyof ComponentMap>(
+    entity: Entity,
+    componentType: K
+  ): boolean {
+    return this.components.get(componentType)?.has(entity) ?? false;
+  }
+
   addSystem(system: System): void {
     this.systems.push(system);
-    logger("info", `Added system: ${system.constructor.name}`);
+    logger("debug", `Added system: ${system.constructor.name}`);
   }
 
   update(deltaTime: number): void {
@@ -60,5 +68,29 @@ export class ECS {
         this.components.get(type)?.has(entity)
       );
     });
+  }
+
+  destroyEntity(entity: Entity): void {
+    // Remove all components from this entity
+    for (const storage of this.components.values()) {
+      storage.delete(entity);
+    }
+    // Remove entity from entity set
+    this.entities.delete(entity);
+    logger("warn", `Entity ${entity} destroyed`);
+  }
+
+  // Resource Management
+  addResource<T>(name: string, resource: T): void {
+    this.resources.set(name, resource);
+    logger("debug", `Added resource: ${name}`);
+  }
+
+  getResource<T>(name: string): T | undefined {
+    return this.resources.get(name) as T | undefined;
+  }
+
+  hasResource(name: string): boolean {
+    return this.resources.has(name);
   }
 }
