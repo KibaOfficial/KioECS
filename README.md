@@ -7,13 +7,26 @@ A lightweight, type-safe Entity Component System (ECS) framework built with Type
 
 ## ✨ Features
 
+### Core Architecture
 - 🚀 **Pure ECS Architecture** - Clean separation of Entities, Components, and Systems
 - 🔒 **Type-Safe** - Full TypeScript support with autocomplete for Components
 - ⚡ **Performant** - Efficient component storage and query system
-- 🎯 **Minimal** - Zero dependencies, lightweight core (~2KB gzipped)
-- 🧩 **Modular** - Easy to extend with custom Systems and Components
-- 🎨 **Clean API** - Intuitive and developer-friendly
+- 🎯 **Engine/Game Separation** - Reusable engine framework with game-specific logic
+- 🧩 **Resource System** - Centralized resource management (Input, Rendering, etc.)
+
+### Built-in Systems
+- 🎨 **Rendering** - Canvas-based WorldRenderSystem and UIRenderSystem
+- 🎮 **Input** - Keyboard input with WASD/Arrow key support
+- 💥 **Collision** - AABB collision detection with damage cooldowns
+- ❤️ **Health** - Entity lifecycle management with death/destruction
+- 🤖 **AI** - Chase behavior for enemies with configurable aggro range
+- 🏃 **Movement** - Physics-based movement with velocity and speed
+
+### Developer Experience
+- 🔍 **Debug Overlay** - Real-time FPS, velocity, position, and entity count
+- 📊 **Logging System** - Configurable log levels (debug, info, warn, error)
 - 🔄 **Hot Reload** - Fast development with Vite
+- 🎯 **Clean API** - Intuitive and developer-friendly
 
 ## 📦 Installation
 
@@ -35,53 +48,75 @@ npm run build
 ## 🚀 Quick Start
 
 ```typescript
-import { Engine } from './Core/Engine';
+import { GameSetup } from './Game/GameSetup';
 
-// Create your game engine
-const engine = new Engine(
-  "My Awesome Game",
-  "1.0.0",
-  "YourName"
-);
+// Create your game
+const game = new GameSetup("My Awesome Game", "1.0.0", "YourName");
 
 // Initialize and start
-await engine.initialize();
-engine.start();
+await game.initialize();
+game.start();
 ```
+
+### Demo Game Features
+The included demo showcases:
+- **Player Movement** - WASD/Arrow keys (200 px/s)
+- **Enemy AI** - 5 enemies that chase player within 300px range
+- **Collision System** - AABB collision with damage cooldown (1s)
+- **Health System** - Health regeneration and entity destruction on death
+- **Debug Overlay** - Set log level to `debug` to show FPS, velocity, position, and entity count
+
+### Controls
+- **WASD** or **Arrow Keys** - Move player
+- **Escape** - (Future: Pause menu)
 
 ## 🏗️ Architecture
 
-KioECS follows the Entity Component System pattern with a clean separation between the **ECS core** and the **Engine**:
+KioECS follows a clean **Engine/Game separation** pattern:
 
-### Engine vs ECS
+```
+src/
+├── Engine/              # Reusable framework
+│   ├── Core/
+│   │   ├── ECS.ts      # Pure ECS implementation
+│   │   └── Engine.ts   # Engine orchestration
+│   ├── Components/     # Generic components
+│   ├── Systems/        # Generic systems (Input, Render, etc.)
+│   └── Resources/      # Shared resources (Input, Canvas)
+│
+└── Game/               # Your game-specific code
+    ├── GameSetup.ts   # Game initialization
+    ├── Systems/       # Game-specific systems (AI, etc.)
+    └── Components/    # Game-specific components
+```
 
-- **ECS** (`Core/ECS.ts`) - Pure ECS implementation
-  - Entity management (create, destroy)
-  - Component storage and retrieval
-  - System registration and updates
-  - Query system
-  - **Reusable** across different projects
+### Layers
 
-- **Engine** (`Core/Engine.ts`) - Game orchestration layer
-  - Initializes the ECS
-  - Sets up game-specific systems
-  - Creates initial entities (player, enemies, etc.)
-  - Manages game loop (start/stop)
-  - **Game-specific** logic and configuration
+**Engine Layer** (Reusable)
+- ECS Core - Entity/Component/System management
+- Generic Systems - Input, Movement, Rendering, Collision
+- Resources - InputResource, RenderResource
+- **Can be used for any game!**
+
+**Game Layer** (Game-Specific)
+- GameSetup - Initializes your specific game
+- Custom Systems - EnemyAISystem, etc.
+- Entity Creation - Player, Enemies, Items
+- **Your game logic lives here!**
 
 ```
 ┌─────────────────────────────────────┐
-│         ENGINE (Game Layer)         │
-│  - System setup                     │
-│  - Entity creation                  │
-│  - Game loop                        │
+│       Game Layer (Specific)         │
+│  - GameSetup                        │
+│  - EnemyAISystem                    │
+│  - Create Player/Enemies            │
 └─────────────────────────────────────┘
             │ uses
 ┌─────────────────────────────────────┐
-│         ECS (Core Layer)            │
-│  - Entity management                │
-│  - Component storage                │
-│  - System execution                 │
+│      Engine Layer (Generic)         │
+│  - ECS Core                         │
+│  - InputSystem, MovementSystem      │
+│  - WorldRenderSystem                │
 └─────────────────────────────────────┘
 ```
 
@@ -316,6 +351,65 @@ Manages entity health, handles regeneration, and detects death.
 - [ ] Asset Loader
 - [ ] Serialization/Deserialization
 - [ ] Performance profiler
+- [ ] Networking/Multiplayer
+- [ ] Sound System
+
+## 📚 Built-in Components
+
+| Component | Properties | Description |
+|-----------|-----------|-------------|
+| `Position` | `x`, `y` | Entity position in world space |
+| `Velocity` | `x`, `y`, `speed` | Movement velocity and base speed |
+| `Health` | `current`, `max` | Entity health points |
+| `Renderable` | `color`, `width`, `height`, `shape` | Visual representation |
+| `Collider` | `width`, `height`, `solid`, `layer` | Collision bounds |
+| `PlayerControlled` | - | Marker for player entity |
+| `AI` | `type`, `aggroRange`, `target` | AI behavior configuration |
+| `DamageCooldown` | `timer`, `duration` | Prevents continuous damage |
+
+## 🔧 Built-in Systems
+
+| System | Purpose | Execution Order |
+|--------|---------|----------------|
+| `InputSystem` | Keyboard input handling | 1 (First) |
+| `EnemyAISystem` | AI behavior logic | 2 |
+| `MovementSystem` | Apply velocity to position | 3 |
+| `CollisionSystem` | Collision detection & response | 4 |
+| `HealthSystem` | Health regeneration & death | 5 |
+| `WorldRenderSystem` | Render game entities | 6 |
+| `UIRenderSystem` | Render UI/HUD | 7 (Last) |
+
+## 🎯 API Quick Reference
+
+```typescript
+// Entity Management
+const entity = engine.createEntity();
+engine.destroyEntity(entity);
+
+// Component Management
+engine.addComponent(entity, "Position", { x: 100, y: 200 });
+const pos = engine.getComponent(entity, "Position");
+const hasPos = engine.hasComponent(entity, "Position");
+
+// Queries
+const movingEntities = engine.query("Position", "Velocity");
+
+// Resources
+engine.addResource("MyResource", myResourceInstance);
+const resource = engine.getResource<MyResourceType>("MyResource");
+
+// System Registration
+engine.registerSystem(new MyCustomSystem());
+
+// Engine Control
+await engine.initialize();
+engine.start();
+engine.stop();
+
+// Logging
+import { setLogLevel } from './utils/utils';
+setLogLevel('debug'); // 'debug' | 'info' | 'warn' | 'error'
+```
 
 ## 🤝 Contributing
 
