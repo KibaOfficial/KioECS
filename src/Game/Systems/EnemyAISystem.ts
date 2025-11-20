@@ -31,7 +31,7 @@ export class EnemyAISystem extends System {
 
       switch (ai.type) {
         case "chase":
-          this.chaseTarget(ai, vel, dx, dy, distance);
+          this.chaseTarget(ai, vel, dx, dy, distance, player);
           break;
         case "wander":
           this.wander(ai, vel, deltaTime);
@@ -49,7 +49,8 @@ export class EnemyAISystem extends System {
     vel: any,
     dx: number,
     dy: number,
-    distance: number
+    distance: number,
+    player: number
   ): void {
     if (distance < ai.aggroRange && distance > 0) {
       // Normalize direction and apply speed
@@ -59,7 +60,7 @@ export class EnemyAISystem extends System {
       if (!ai.target) {
         logger("debug", "Enemy aggro'd on player!");
       }
-      ai.target = 0; // Player entity ID
+      ai.target = player; // Player entity ID
     } else {
       // Out of range, stop
       vel.x = 0;

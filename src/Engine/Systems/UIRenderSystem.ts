@@ -71,8 +71,9 @@ export class UIRenderSystem extends System {
     ctx.fillText(`FPS: ${this.fps}`, x, y);
     y += 18;
 
-    // Delta Time
-    ctx.fillText(`Delta: ${this.fps > 0 ? (1000 / this.fps).toFixed(1) : '0.0'}ms`, x, y);
+    // Delta Time (FPS can be 0 on first frame - avoid division by zero)
+    const deltaMs = this.fps > 0 ? (1000 / this.fps).toFixed(1) : '0.0';
+    ctx.fillText(`Delta: ${deltaMs}ms`, x, y);
     y += 18;
 
     if (velocity) {

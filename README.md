@@ -64,7 +64,7 @@ The included demo showcases:
 - **Enemy AI** - 5 enemies that chase player within 300px range
 - **Collision System** - AABB collision with damage cooldown (1s)
 - **Health System** - Health regeneration and entity destruction on death
-- **Debug Overlay** - Press F3 or set log level to `debug` for FPS/stats
+- **Debug Overlay** - Set log level to `debug` to show FPS, velocity, position, and entity count
 
 ### Controls
 - **WASD** or **Arrow Keys** - Move player

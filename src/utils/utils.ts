@@ -27,7 +27,7 @@ class Logger {
   setLogLevel(level: LogLevel): void {
     this.logLevel = level;
     // Set global flag for debug mode
-    (window as any).__KIOECS_DEBUG__ = (level === 'debug');
+    window.__KIOECS_DEBUG__ = (level === 'debug');
     this.log('info', `Log level set to: ${level.toUpperCase()}`);
   }
 
