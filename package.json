@@ -1,0 +1,23 @@
+{
+  "name": "web-ecs",
+  "version": "1.0.0",
+  "description": "A web-based ECS (Entity Component System) framework built with TypeScript, Vite and WebAPI.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [
+  ],
+  "author": "KibaOfficial",
+  "license": "MIT",
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.14",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.14",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.10"
+  }
+}
