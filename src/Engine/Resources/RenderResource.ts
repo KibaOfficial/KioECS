@@ -43,7 +43,7 @@ export class RenderResource {
     logger("info", `Canvas initialized: ${this.width}x${this.height}`);
   }
 
-  private handleResize(): void {
+  private handleResize = (): void => {
     this.width = this.container.clientWidth;
     this.height = this.container.clientHeight;
     this.canvas.width = this.width;
@@ -53,5 +53,9 @@ export class RenderResource {
 
   clear(): void {
     this.ctx.clearRect(0, 0, this.width, this.height);
+  }
+
+  dispose(): void {
+    window.removeEventListener("resize", this.handleResize);
   }
 }

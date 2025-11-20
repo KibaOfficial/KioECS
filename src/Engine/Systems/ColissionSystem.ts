@@ -85,11 +85,11 @@ export class CollisionSystem extends System {
         );
       }
 
-      this.seperateEntities(ecs, entityA, entityB);
+      this.separateEntities(ecs, entityA, entityB);
     }
   }
 
-  private seperateEntities(ecs: ECS, entityA: number, entityB: number): void {
+  private separateEntities(ecs: ECS, entityA: number, entityB: number): void {
     const posA = ecs.getComponent(entityA, "Position")!;
     const posB = ecs.getComponent(entityB, "Position")!;
     const colA = ecs.getComponent(entityA, "Collider")!;
@@ -105,7 +105,7 @@ export class CollisionSystem extends System {
 
     // push apart on smallest overlap axis
     if (overlapX < overlapY) {
-      // seperate on x axis
+      // separate on x axis
       if (posA.x < posB.x) {
         posA.x -= overlapX / 2;
         posB.x += overlapX / 2;
@@ -114,7 +114,7 @@ export class CollisionSystem extends System {
         posB.x -= overlapX / 2;
       }
     } else {
-      // seperate on y axis
+      // separate on y axis
       if (posA.y < posB.y) {
         posA.y -= overlapY / 2;
         posB.y += overlapY / 2;

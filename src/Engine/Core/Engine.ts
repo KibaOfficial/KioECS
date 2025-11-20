@@ -104,13 +104,12 @@ export class Engine {
 
       this.ecs.update(deltaTime);
 
-      // Nur weitermachen, wenn Engine läuft
+      // Continue only if engine is running
       if (this.isRunning) {
         requestAnimationFrame(loop);
       }
     };
 
-    this.isRunning = true;
     requestAnimationFrame(loop);
   }
 

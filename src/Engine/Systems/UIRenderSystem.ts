@@ -72,7 +72,7 @@ export class UIRenderSystem extends System {
     y += 18;
 
     // Delta Time
-    ctx.fillText(`Delta: ${(1000 / this.fps).toFixed(1)}ms`, x, y);
+    ctx.fillText(`Delta: ${this.fps > 0 ? (1000 / this.fps).toFixed(1) : '0.0'}ms`, x, y);
     y += 18;
 
     if (velocity) {
