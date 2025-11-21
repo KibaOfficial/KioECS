@@ -9,7 +9,7 @@ import { RenderResource } from "../Resources/RenderResource";
 import { System } from "./System";
 
 export class WorldRenderSystem extends System {
-  update(ecs: ECS, deltaTime: number): void {
+  update(ecs: ECS, _deltaTime: number): void {
     const render = ecs.getResource<RenderResource>("RenderResource");
 
     if (!render) {
@@ -29,6 +29,14 @@ export class WorldRenderSystem extends System {
       const pos = ecs.getComponent(entity, "Position")!;
       const renderable = ecs.getComponent(entity, "Renderable")!;
 
+      // Check if this is a particle (for alpha blending)
+      const particle = ecs.getComponent(entity, "Particle");
+      
+      // Set alpha if it's a particle
+      if (particle) {
+        render.ctx.globalAlpha = particle.alpha;
+      }
+
       render.ctx.fillStyle = renderable.color;
 
       if (renderable.shape === "circle") {
@@ -43,6 +51,11 @@ export class WorldRenderSystem extends System {
         render.ctx.fill();
       } else {
         render.ctx.fillRect(pos.x, pos.y, renderable.width, renderable.height);
+      }
+
+      // Reset alpha
+      if (particle) {
+        render.ctx.globalAlpha = 1.0;
       }
     }
   }

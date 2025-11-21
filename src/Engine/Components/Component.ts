@@ -12,6 +12,9 @@ export const ComponentTypes = {
   Collider: "Collider" as const,
   DamageCooldown: "DamageCooldown" as const,
   AI: "AI" as const,
+  Projectile: "Projectile" as const,
+  ParticleEmitter: "ParticleEmitter" as const,
+  Particle: "Particle" as const,
 }
 
 export type ComponentType = typeof ComponentTypes[keyof typeof ComponentTypes];
@@ -25,6 +28,9 @@ export interface ComponentMap {
   Collider: Collider;
   DamageCooldown: DamageCooldown;
   AI: AI;
+  Projectile: Projectile;
+  ParticleEmitter: ParticleEmitter;
+  Particle: Particle;
 }
 
 export interface Position {
@@ -69,4 +75,26 @@ export interface AI {
   aggroRange: number;
   target?: number; // Target entity ID
   wanderTimer?: number; // For wander behavior
+}
+
+export interface Projectile {
+  lifetime: number;
+  maxLifetime: number;
+  damage: number;
+  owner: number; // Entity ID that shot the projectile
+  fadeOut: boolean;  
+}
+
+export interface ParticleEmitter {
+  spawnRate: number; // particles per second
+  spawnTimer: number; // time until next spawn
+  particleLifetime: number;
+  particleColor: string;
+  emitting: boolean;
+}
+
+export interface Particle {
+  lifetime: number;
+  maxLifetime: number;
+  alpha: number; // opacity for fade out
 }

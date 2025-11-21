@@ -10,10 +10,13 @@ import { CollisionSystem } from "../Engine/Systems/ColissionSystem";
 import { HealthSystem } from "../Engine/Systems/HealthSystem";
 import { InputSystem } from "../Engine/Systems/InputSystem";
 import { MovementSystem } from "../Engine/Systems/MovementSystem";
+import { ParticleSystem } from "../Engine/Systems/ParticleSystem";
+import { ProjectileSystem } from "../Engine/Systems/ProjectileSystem";
 import { UIRenderSystem } from "../Engine/Systems/UIRenderSystem";
 import { WorldRenderSystem } from "../Engine/Systems/WorldRenderSystem";
 import { logger, setLogLevel } from "../shared/logger";
 import { EnemyAISystem } from "./Systems/EnemyAISystem";
+import { ShootingSystem } from "./Systems/ShootingSystem";
 
 
 export class GameSetup {
@@ -56,11 +59,20 @@ export class GameSetup {
     // Input must run first to capture keyboard state
     this.engine.registerSystem(new InputSystem());
     
+    // Shooting system (after input, before movement)
+    this.engine.registerSystem(new ShootingSystem());
+    
     // AI logic (before movement so AI can set velocities)
     this.engine.registerSystem(new EnemyAISystem());
     
     // Then movement based on input/AI
     this.engine.registerSystem(new MovementSystem());
+
+    // Particle system (update particles)
+    this.engine.registerSystem(new ParticleSystem());
+
+    // Projectile system (update projectiles and check collisions)
+    this.engine.registerSystem(new ProjectileSystem());
 
     // Collision detection
     this.engine.registerSystem(new CollisionSystem());

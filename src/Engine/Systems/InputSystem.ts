@@ -8,7 +8,7 @@ import { InputResource } from "../Resources/InputResource";
 import { System } from "./System";
 
 export class InputSystem extends System {
-  update(ecs: ECS, deltaTime: number): void {
+  update(ecs: ECS, _deltaTime: number): void {
     const input = ecs.getResource<InputResource>("InputResource");
     if (!input) return;
 
