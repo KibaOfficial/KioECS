@@ -5,7 +5,7 @@
 
 import { ECS } from "../../Engine/Core/ECS";
 import { System } from "../../Engine/Systems/System";
-import { logger } from "../../utils/utils";
+import { logger } from "../../shared/logger";
 
 export class EnemyAISystem extends System {
   update(ecs: ECS, deltaTime: number): void {
@@ -56,7 +56,7 @@ export class EnemyAISystem extends System {
       // Normalize direction and apply speed
       vel.x = (dx / distance) * vel.speed;
       vel.y = (dy / distance) * vel.speed;
-      
+
       if (!ai.target) {
         logger("debug", "Enemy aggro'd on player!");
       }

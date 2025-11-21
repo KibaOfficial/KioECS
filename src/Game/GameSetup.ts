@@ -12,8 +12,9 @@ import { InputSystem } from "../Engine/Systems/InputSystem";
 import { MovementSystem } from "../Engine/Systems/MovementSystem";
 import { UIRenderSystem } from "../Engine/Systems/UIRenderSystem";
 import { WorldRenderSystem } from "../Engine/Systems/WorldRenderSystem";
+import { logger, setLogLevel } from "../shared/logger";
 import { EnemyAISystem } from "./Systems/EnemyAISystem";
-import { logger, setLogLevel } from "../utils/utils";
+
 
 export class GameSetup {
   private name: string;

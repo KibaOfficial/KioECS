@@ -3,7 +3,7 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-import { logger } from "../../utils/utils";
+import { logger } from "../../shared/logger";
 import { ECS } from "../Core/ECS";
 import { System } from "./System";
 
@@ -55,14 +55,17 @@ export class CollisionSystem extends System {
   }
 
   private handleCollision(ecs: ECS, entityA: number, entityB: number): void {
-    logger("debug", `Collision: Entity ${entityA} ↔ Entity ${entityB}`);
-
     const isPlayerA = ecs.hasComponent(entityA, "PlayerControlled");
     const isPlayerB = ecs.hasComponent(entityB, "PlayerControlled");
+    const isEnemyA = ecs.hasComponent(entityA, "AI");
+    const isEnemyB = ecs.hasComponent(entityB, "AI");
 
     // Player vs Enemy collision
-    if (isPlayerA || isPlayerB) {
+    if ((isPlayerA && isEnemyB) || (isPlayerB && isEnemyA)) {
       const player = isPlayerA ? entityA : entityB;
+      const enemy = isPlayerA ? entityB : entityA;
+
+      logger("debug", `Collision: Player ${player} ↔ Enemy ${enemy}`);
 
       let cooldown = ecs.getComponent(player, "DamageCooldown");
       if (!cooldown) {
@@ -72,6 +75,7 @@ export class CollisionSystem extends System {
       }
 
       if (cooldown.timer > 0) {
+        this.separateEntities(ecs, entityA, entityB);
         return; // still in cooldown
       }
 
@@ -85,6 +89,14 @@ export class CollisionSystem extends System {
         );
       }
 
+      this.separateEntities(ecs, entityA, entityB);
+    }
+    // Enemy vs Enemy collision - just separate them
+    else if (isEnemyA && isEnemyB) {
+      this.separateEntities(ecs, entityA, entityB);
+    }
+    // Player vs Player (in case of multiplayer) - separate
+    else if (isPlayerA && isPlayerB) {
       this.separateEntities(ecs, entityA, entityB);
     }
   }

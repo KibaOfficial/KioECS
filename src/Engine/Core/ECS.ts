@@ -3,10 +3,10 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
+import { logger } from "../../shared/logger";
 import { ComponentMap } from "../Components/Component";
 import { Entity } from "../Entities/Entity";
 import { System } from "../Systems/System";
-import { logger } from "../../utils/utils";
 
 export class ECS {
   // Internal ECS States

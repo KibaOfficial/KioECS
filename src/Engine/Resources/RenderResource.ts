@@ -3,7 +3,7 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-import { logger } from "../../utils/utils";
+import { logger } from "../../shared/logger";
 
 export class RenderResource {
   public canvas: HTMLCanvasElement;

@@ -3,11 +3,12 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-import { logger, sleep } from "../../utils/utils";
 import { ECS } from "./ECS";
 import { System } from "../Systems/System";
 import { Entity } from "../Entities/Entity";
 import { ComponentMap } from "../Components/Component";
+import { logger } from "../../shared/logger";
+import { sleep } from "../../shared/sleep";
 
 export class Engine {
   private ecs: ECS;

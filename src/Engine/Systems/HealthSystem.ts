@@ -3,8 +3,8 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
+import { logger } from "../../shared/logger";
 import { ECS } from "../Core/ECS";
-import { logger } from "../../utils/utils";
 import { System } from "./System";
 
 export class HealthSystem extends System {

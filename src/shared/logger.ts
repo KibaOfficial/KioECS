@@ -15,7 +15,7 @@ class Logger {
     error: 3,
   };
 
-  private constructor() {}
+  private constructor() { }
 
   static getInstance(): Logger {
     if (!Logger.instance) {
@@ -57,10 +57,6 @@ class Logger {
         return '';
     }
   }
-}
-
-export async function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 export function logger(type: LogLevel, message: string): void {

@@ -104,7 +104,7 @@ export class UIRenderSystem extends System {
       // We can't directly access the Logger instance, so we check via a global
       // or we can add a helper function in utils
       // For now, we'll use a simple approach
-      return (window as any).__KIOECS_DEBUG__ === true;
+      return window.__KIOECS_DEBUG__ === true;
     } catch {
       return false;
     }

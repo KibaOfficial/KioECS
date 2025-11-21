@@ -5,3 +5,5 @@ declare global {
     __KIOECS_DEBUG__?: boolean;
   }
 }
+
+export {};
