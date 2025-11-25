@@ -4,6 +4,7 @@
 // https://opensource.org/licenses/MIT
 
 import { Engine } from "../Engine/Core/Engine";
+import { AudioResource } from "../Engine/Resources/AudioResource";
 import { InputResource } from "../Engine/Resources/InputResource";
 import { RenderResource } from "../Engine/Resources/RenderResource";
 import { CollisionSystem } from "../Engine/Systems/ColissionSystem";
@@ -49,6 +50,9 @@ export class GameSetup {
     
     const inputResource = new InputResource();
     this.engine.addResource("InputResource", inputResource);
+    
+    const audioResource = new AudioResource();
+    this.engine.addResource("AudioResource", audioResource);
     
     logger("info", "Resources initialized.");
   }

@@ -4,6 +4,7 @@
 // https://opensource.org/licenses/MIT
 
 import { ECS } from "../Core/ECS";
+import { AudioResource } from "../Resources/AudioResource";
 import { System } from "./System";
 import { logger } from "../../shared/logger";
 
@@ -60,6 +61,10 @@ export class ProjectileSystem extends System {
         // Deal damage
         enemyHealth.current -= projComp.damage;
         logger("info", `Projectile hit enemy ${enemy}! Damage: ${projComp.damage}`);
+
+        // Play hit sound
+        const audio = ecs.getResource<AudioResource>("AudioResource");
+        if (audio) audio.playSound("hit", 0.5);
 
         // Spawn impact particles
         this.spawnImpactParticles(ecs, projPos.x, projPos.y);

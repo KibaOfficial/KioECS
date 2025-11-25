@@ -26,6 +26,8 @@ export class Engine {
 
   async initialize(): Promise<void> {
     logger("info", "Initializing Engine...");
+    // set window title to game name, version, author
+    document.title = `${this.name} v${this.version} by ${this.author}`;
     await sleep(1000);
     logger("info", `Engine ready: ${this.name} v${this.version} by ${this.author}`);
   }

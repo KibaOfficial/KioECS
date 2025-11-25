@@ -16,7 +16,9 @@ A lightweight, type-safe Entity Component System (ECS) framework built with Type
 
 ### Built-in Systems
 - 🎨 **Rendering** - Canvas-based WorldRenderSystem and UIRenderSystem
-- 🎮 **Input** - Keyboard input with WASD/Arrow key support
+- 🎮 **Input** - Keyboard and mouse input with WASD/Arrow key support
+- 🔫 **Combat** - Projectile system with collision detection and particle trails
+- ✨ **Particles** - Flexible particle emitter system for visual effects
 - 💥 **Collision** - AABB collision detection with damage cooldowns
 - ❤️ **Health** - Entity lifecycle management with death/destruction
 - 🤖 **AI** - Chase behavior for enemies with configurable aggro range
@@ -61,13 +63,18 @@ game.start();
 ### Demo Game Features
 The included demo showcases:
 - **Player Movement** - WASD/Arrow keys (200 px/s)
+- **Shooting System** - Space to shoot projectiles towards mouse cursor
+- **Particle Effects** - Projectile trails and muzzle flash effects
 - **Enemy AI** - 5 enemies that chase player within 300px range
 - **Collision System** - AABB collision with damage cooldown (1s)
+- **Projectile Combat** - Projectiles damage enemies on contact
 - **Health System** - Health regeneration and entity destruction on death
 - **Debug Overlay** - Set log level to `debug` to show FPS, velocity, position, and entity count
 
 ### Controls
 - **WASD** or **Arrow Keys** - Move player
+- **Space** - Shoot towards mouse cursor
+- **Mouse** - Aim direction for shooting
 - **Escape** - (Future: Pause menu)
 
 ## 🏗️ Architecture
@@ -266,19 +273,34 @@ ecs.addComponent(entity, "Sprite", {
 ```
 KioECS/
 ├── src/
-│   ├── Core/
-│   │   ├── ECS.ts           # Core ECS implementation
-│   │   └── Engine.ts        # Game engine orchestration
-│   ├── Components/
-│   │   └── Component.ts     # Component definitions
-│   ├── Entities/
-│   │   └── Entity.ts        # Entity type definition
-│   ├── Systems/
-│   │   ├── System.ts        # Abstract System base class
-│   │   └── HealthSystem.ts  # Example system
-│   ├── utils/
-│   │   └── utils.ts         # Utility functions
-│   └── index.ts             # Entry point
+│   ├── Engine/
+│   │   ├── Core/
+│   │   │   ├── ECS.ts           # Core ECS implementation
+│   │   │   └── Engine.ts        # Engine orchestration
+│   │   ├── Components/
+│   │   │   └── Component.ts     # Component definitions
+│   │   ├── Systems/
+│   │   │   ├── System.ts        # Abstract System base class
+│   │   │   ├── InputSystem.ts   # Input handling
+│   │   │   ├── MovementSystem.ts
+│   │   │   ├── CollisionSystem.ts
+│   │   │   ├── HealthSystem.ts
+│   │   │   ├── ParticleSystem.ts
+│   │   │   ├── ProjectileSystem.ts
+│   │   │   ├── WorldRenderSystem.ts
+│   │   │   └── UIRenderSystem.ts
+│   │   └── Resources/
+│   │       ├── InputResource.ts # Keyboard & mouse state
+│   │       └── RenderResource.ts
+│   ├── Game/
+│   │   ├── GameSetup.ts        # Game initialization
+│   │   └── Systems/
+│   │       ├── EnemyAISystem.ts
+│   │       └── ShootingSystem.ts
+│   ├── shared/
+│   │   ├── logger.ts           # Logging utilities
+│   │   └── sleep.ts            # Helper functions
+│   └── index.ts                # Entry point
 ├── package.json
 ├── tsconfig.json
 └── vite.config.ts
@@ -341,18 +363,19 @@ Manages entity health, handles regeneration, and detects death.
 
 ## 🔮 Roadmap
 
-- [ ] Render System (Canvas/WebGL)
-- [ ] Input System
-- [ ] Collision System
-- [ ] Audio System
+- [x] Render System (Canvas 2D)
+- [x] Input System (Keyboard & Mouse)
+- [x] Collision System (AABB)
+- [x] Particle System
+- [x] Projectile/Combat System
+- [ ] Audio/Sound System
 - [ ] Scene Manager
-- [ ] Physics System
-- [ ] Particle System
-- [ ] Asset Loader
+- [ ] Advanced Physics (Velocity, Acceleration, Friction)
+- [ ] Sprite/Asset Loader
 - [ ] Serialization/Deserialization
-- [ ] Performance profiler
+- [ ] Performance Profiler
 - [ ] Networking/Multiplayer
-- [ ] Sound System
+- [ ] Tilemaps/Level Editor
 
 ## 📚 Built-in Components
 
@@ -366,18 +389,24 @@ Manages entity health, handles regeneration, and detects death.
 | `PlayerControlled` | - | Marker for player entity |
 | `AI` | `type`, `aggroRange`, `target` | AI behavior configuration |
 | `DamageCooldown` | `timer`, `duration` | Prevents continuous damage |
+| `Projectile` | `lifetime`, `maxLifetime`, `damage`, `owner` | Projectile behavior and damage |
+| `ParticleEmitter` | `spawnRate`, `particleLifetime`, `particleColor`, `emitting` | Particle emission configuration |
+| `Particle` | `lifetime`, `maxLifetime`, `alpha` | Individual particle properties |
 
 ## 🔧 Built-in Systems
 
 | System | Purpose | Execution Order |
 |--------|---------|----------------|
-| `InputSystem` | Keyboard input handling | 1 (First) |
-| `EnemyAISystem` | AI behavior logic | 2 |
-| `MovementSystem` | Apply velocity to position | 3 |
-| `CollisionSystem` | Collision detection & response | 4 |
-| `HealthSystem` | Health regeneration & death | 5 |
-| `WorldRenderSystem` | Render game entities | 6 |
-| `UIRenderSystem` | Render UI/HUD | 7 (Last) |
+| `InputSystem` | Keyboard & mouse input handling | 1 (First) |
+| `ShootingSystem` | Player shooting mechanics | 2 |
+| `EnemyAISystem` | AI behavior logic | 3 |
+| `MovementSystem` | Apply velocity to position | 4 |
+| `ParticleSystem` | Update particle emitters & particles | 5 |
+| `ProjectileSystem` | Update projectiles & check collisions | 6 |
+| `CollisionSystem` | Entity collision detection & response | 7 |
+| `HealthSystem` | Health regeneration & death | 8 |
+| `WorldRenderSystem` | Render game entities | 9 |
+| `UIRenderSystem` | Render UI/HUD | 10 (Last) |
 
 ## 🎯 API Quick Reference
 
@@ -407,7 +436,7 @@ engine.start();
 engine.stop();
 
 // Logging
-import { setLogLevel } from './utils/utils';
+import { setLogLevel } from './shared/logger';
 setLogLevel('debug'); // 'debug' | 'info' | 'warn' | 'error'
 ```
 

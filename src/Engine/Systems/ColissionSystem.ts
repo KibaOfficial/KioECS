@@ -4,6 +4,7 @@
 // https://opensource.org/licenses/MIT
 
 import { logger } from "../../shared/logger";
+import { AudioResource } from "../Resources/AudioResource";
 import { ECS } from "../Core/ECS";
 import { System } from "./System";
 
@@ -87,6 +88,10 @@ export class CollisionSystem extends System {
           "warn",
           `Player ${player} took damage! Health: ${health.current}/${health.max}`
         );
+        
+        // Play damage sound
+        const audio = ecs.getResource<AudioResource>("AudioResource");
+        if (audio) audio.playSound("hurt", 0.4);
       }
 
       this.separateEntities(ecs, entityA, entityB);

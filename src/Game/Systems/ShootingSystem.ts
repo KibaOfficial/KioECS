@@ -5,6 +5,7 @@
 
 import { ECS } from "../../Engine/Core/ECS";
 import { System } from "../../Engine/Systems/System";
+import { AudioResource } from "../../Engine/Resources/AudioResource";
 import { InputResource } from "../../Engine/Resources/InputResource";
 import { logger } from "../../shared/logger";
 
@@ -32,6 +33,10 @@ export class ShootingSystem extends System {
     if (input.keys["Space"] && this.shootCooldown <= 0) {
       this.shootProjectile(ecs, player, playerPos);
       this.shootCooldown = this.cooldownDuration;
+      
+      // Play shoot sound
+      const audio = ecs.getResource<AudioResource>("AudioResource");
+      if (audio) audio.playSound("shoot", 0.3);
     }
   }
 
