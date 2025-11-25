@@ -14,15 +14,21 @@ A lightweight, type-safe Entity Component System (ECS) framework built with Type
 - 🎯 **Engine/Game Separation** - Reusable engine framework with game-specific logic
 - 🧩 **Resource System** - Centralized resource management (Input, Rendering, etc.)
 
-### Built-in Systems
+### Engine Features (Reusable Framework)
 - 🎨 **Rendering** - Canvas-based WorldRenderSystem and UIRenderSystem
-- 🎮 **Input** - Keyboard and mouse input with WASD/Arrow key support
-- 🔫 **Combat** - Projectile system with collision detection and particle trails
+- 🎮 **Input** - Keyboard and mouse input handling
 - ✨ **Particles** - Flexible particle emitter system for visual effects
-- 💥 **Collision** - AABB collision detection with damage cooldowns
+- 💥 **Collision** - AABB collision detection system
 - ❤️ **Health** - Entity lifecycle management with death/destruction
-- 🤖 **AI** - Chase behavior for enemies with configurable aggro range
 - 🏃 **Movement** - Physics-based movement with velocity and speed
+- 🔫 **Projectiles** - Generic projectile system with collision detection
+- 🔊 **Audio** - Web Audio API resource with synthesized sound effects
+
+### Demo Game Features (Example Implementation)
+- 🎯 **Player Shooting** - Space to shoot towards mouse cursor
+- 🤖 **Enemy AI** - Chase behavior with configurable aggro range
+- 💀 **Combat System** - Damage on collision with cooldowns
+- 🎨 **Particle Effects** - Muzzle flash, projectile trails, impact particles
 
 ### Developer Experience
 - 🔍 **Debug Overlay** - Real-time FPS, velocity, position, and entity count
@@ -64,10 +70,11 @@ game.start();
 The included demo showcases:
 - **Player Movement** - WASD/Arrow keys (200 px/s)
 - **Shooting System** - Space to shoot projectiles towards mouse cursor
-- **Particle Effects** - Projectile trails and muzzle flash effects
+- **Particle Effects** - Projectile trails, muzzle flash, and impact particles
+- **Sound Effects** - Synthesized audio for shooting, hits, and damage (no files!)
 - **Enemy AI** - 5 enemies that chase player within 300px range
 - **Collision System** - AABB collision with damage cooldown (1s)
-- **Projectile Combat** - Projectiles damage enemies on contact
+- **Projectile Combat** - Projectiles deal 25 damage to enemies on contact
 - **Health System** - Health regeneration and entity destruction on death
 - **Debug Overlay** - Set log level to `debug` to show FPS, velocity, position, and entity count
 
@@ -99,17 +106,21 @@ src/
 
 ### Layers
 
-**Engine Layer** (Reusable)
+**Engine Layer** (Reusable Framework) ⚙️
 - ECS Core - Entity/Component/System management
-- Generic Systems - Input, Movement, Rendering, Collision
-- Resources - InputResource, RenderResource
-- **Can be used for any game!**
+- Generic Systems - Input, Movement, Rendering, Collision, Particles, Projectiles, Health
+- Generic Components - Position, Velocity, Health, Collider, Renderable, Particle, Projectile
+- Resources - InputResource, RenderResource, AudioResource
+- **Can be used for ANY game type!** (Platformer, RPG, Shooter, etc.)
 
-**Game Layer** (Game-Specific)
-- GameSetup - Initializes your specific game
-- Custom Systems - EnemyAISystem, etc.
-- Entity Creation - Player, Enemies, Items
-- **Your game logic lives here!**
+**Game Layer** (Your Specific Game) 🎮
+- GameSetup - Initializes YOUR specific game
+- Custom Systems - ShootingSystem, EnemyAISystem (demo examples)
+- Custom Components - PlayerControlled, AI (demo examples)
+- Entity Creation - Player, Enemies, Items (your game entities)
+- **Your unique game logic lives here!**
+
+> **Important:** The demo game (shooting/AI) is just an **example**. KioECS is a **generic framework** - you can build platformers, RPGs, puzzle games, etc!
 
 ```
 ┌─────────────────────────────────────┐
@@ -290,8 +301,9 @@ KioECS/
 │   │   │   ├── WorldRenderSystem.ts
 │   │   │   └── UIRenderSystem.ts
 │   │   └── Resources/
-│   │       ├── InputResource.ts # Keyboard & mouse state
-│   │       └── RenderResource.ts
+│   │       ├── InputResource.ts  # Keyboard & mouse state
+│   │       ├── RenderResource.ts # Canvas rendering
+│   │       └── AudioResource.ts  # Web Audio API
 │   ├── Game/
 │   │   ├── GameSetup.ts        # Game initialization
 │   │   └── Systems/
@@ -299,6 +311,7 @@ KioECS/
 │   │       └── ShootingSystem.ts
 │   ├── shared/
 │   │   ├── logger.ts           # Logging utilities
+│   │   ├── audioSynth.ts       # Synthesized sound generation
 │   │   └── sleep.ts            # Helper functions
 │   └── index.ts                # Entry point
 ├── package.json
@@ -361,6 +374,30 @@ Manages entity health, handles regeneration, and detects death.
 // Logs when entities die (health <= 0)
 ```
 
+### AudioSystem
+Web Audio API integration with procedurally generated sound effects.
+
+```typescript
+// Synthesized sounds - no audio files needed!
+// shoot - Laser pew sound (frequency sweep)
+// hit   - Impact sound (noise + tone)
+// hurt  - Damage taken (descending tone with vibrato)
+
+// Play a sound
+const audio = ecs.getResource<AudioResource>("AudioResource");
+audio.playSound("shoot", 0.5); // 50% volume
+
+// Adjust master volume
+audio.setMasterVolume(0.8); // 80% master volume
+```
+
+**Why Synthesized Audio?**
+- ✅ **No Asset Loading** - Instant, no HTTP requests
+- ✅ **Tiny Bundle Size** - Few lines of code vs KB/MB files
+- ✅ **Customizable** - Adjust frequency, duration, envelope in code
+- ✅ **Retro Aesthetic** - Classic arcade/chiptune vibes
+- ✅ **No Copyright Issues** - 100% procedural generation
+
 ## 🔮 Roadmap
 
 - [x] Render System (Canvas 2D)
@@ -368,7 +405,8 @@ Manages entity health, handles regeneration, and detects death.
 - [x] Collision System (AABB)
 - [x] Particle System
 - [x] Projectile/Combat System
-- [ ] Audio/Sound System
+- [x] Audio/Sound System (Synthesized)
+- [ ] Audio/Sound System (File-based)
 - [ ] Scene Manager
 - [ ] Advanced Physics (Velocity, Acceleration, Friction)
 - [ ] Sprite/Asset Loader
@@ -377,7 +415,7 @@ Manages entity health, handles regeneration, and detects death.
 - [ ] Networking/Multiplayer
 - [ ] Tilemaps/Level Editor
 
-## 📚 Built-in Components
+## 📚 Engine Components (Reusable)
 
 | Component | Properties | Description |
 |-----------|-----------|-------------|
@@ -386,27 +424,53 @@ Manages entity health, handles regeneration, and detects death.
 | `Health` | `current`, `max` | Entity health points |
 | `Renderable` | `color`, `width`, `height`, `shape` | Visual representation |
 | `Collider` | `width`, `height`, `solid`, `layer` | Collision bounds |
-| `PlayerControlled` | - | Marker for player entity |
-| `AI` | `type`, `aggroRange`, `target` | AI behavior configuration |
-| `DamageCooldown` | `timer`, `duration` | Prevents continuous damage |
 | `Projectile` | `lifetime`, `maxLifetime`, `damage`, `owner` | Projectile behavior and damage |
 | `ParticleEmitter` | `spawnRate`, `particleLifetime`, `particleColor`, `emitting` | Particle emission configuration |
 | `Particle` | `lifetime`, `maxLifetime`, `alpha` | Individual particle properties |
+| `DamageCooldown` | `timer`, `duration` | Prevents continuous damage |
 
-## 🔧 Built-in Systems
+## 🎮 Demo Components (Example)
 
-| System | Purpose | Execution Order |
-|--------|---------|----------------|
-| `InputSystem` | Keyboard & mouse input handling | 1 (First) |
-| `ShootingSystem` | Player shooting mechanics | 2 |
-| `EnemyAISystem` | AI behavior logic | 3 |
-| `MovementSystem` | Apply velocity to position | 4 |
-| `ParticleSystem` | Update particle emitters & particles | 5 |
-| `ProjectileSystem` | Update projectiles & check collisions | 6 |
-| `CollisionSystem` | Entity collision detection & response | 7 |
-| `HealthSystem` | Health regeneration & death | 8 |
-| `WorldRenderSystem` | Render game entities | 9 |
-| `UIRenderSystem` | Render UI/HUD | 10 (Last) |
+| Component | Properties | Description |
+|-----------|-----------|-------------|
+| `PlayerControlled` | - | Marker for player entity (demo-specific) |
+| `AI` | `type`, `aggroRange`, `target` | AI behavior configuration (demo-specific) |
+
+**Note:** The demo components show how to extend the engine with game-specific logic. You can create your own components for your game!
+
+## 🔧 Engine Systems (Reusable)
+
+| System | Purpose | Location |
+|--------|---------|----------|
+| `InputSystem` | Keyboard & mouse input handling | `Engine/Systems/` |
+| `MovementSystem` | Apply velocity to position | `Engine/Systems/` |
+| `ParticleSystem` | Update particle emitters & particles | `Engine/Systems/` |
+| `ProjectileSystem` | Update projectiles & check collisions | `Engine/Systems/` |
+| `CollisionSystem` | Entity collision detection & response | `Engine/Systems/` |
+| `HealthSystem` | Health regeneration & death | `Engine/Systems/` |
+| `WorldRenderSystem` | Render game entities (with particle alpha blending) | `Engine/Systems/` |
+| `UIRenderSystem` | Render UI/HUD | `Engine/Systems/` |
+
+## 🎮 Demo Game Systems (Example)
+
+| System | Purpose | Location |
+|--------|---------|----------|
+| `ShootingSystem` | Player shooting mechanics (demo-specific) | `Game/Systems/` |
+| `EnemyAISystem` | Enemy chase AI (demo-specific) | `Game/Systems/` |
+
+**System Execution Order in Demo:**
+```
+1. InputSystem (Engine)
+2. ShootingSystem (Game) ← Your game logic
+3. EnemyAISystem (Game)   ← Your game logic
+4. MovementSystem (Engine)
+5. ParticleSystem (Engine)
+6. ProjectileSystem (Engine)
+7. CollisionSystem (Engine)
+8. HealthSystem (Engine)
+9. WorldRenderSystem (Engine)
+10. UIRenderSystem (Engine)
+```
 
 ## 🎯 API Quick Reference
 
