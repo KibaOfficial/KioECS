@@ -116,11 +116,11 @@ src/
 **Game Layer** (Your Specific Game) 🎮
 - GameSetup - Initializes YOUR specific game
 - Custom Systems - ShootingSystem, EnemyAISystem (demo examples)
-- Custom Components - PlayerControlled, AI (demo examples)
 - Entity Creation - Player, Enemies, Items (your game entities)
+- System Integration - How you wire up engine systems for YOUR game
 - **Your unique game logic lives here!**
 
-> **Important:** The demo game (shooting/AI) is just an **example**. KioECS is a **generic framework** - you can build platformers, RPGs, puzzle games, etc!
+> **Important:** The demo game (shooting/AI) is just an **example**. All components are generic - the demo shows one way to use them. KioECS is a **flexible framework** - you can build platformers, RPGs, puzzle games, tower defense, etc!
 
 ```
 ┌─────────────────────────────────────┐
@@ -417,6 +417,8 @@ audio.setMasterVolume(0.8); // 80% master volume
 
 ## 📚 Engine Components (Reusable)
 
+All components are defined in `Engine/Components/Component.ts`:
+
 | Component | Properties | Description |
 |-----------|-----------|-------------|
 | `Position` | `x`, `y` | Entity position in world space |
@@ -428,15 +430,10 @@ audio.setMasterVolume(0.8); // 80% master volume
 | `ParticleEmitter` | `spawnRate`, `particleLifetime`, `particleColor`, `emitting` | Particle emission configuration |
 | `Particle` | `lifetime`, `maxLifetime`, `alpha` | Individual particle properties |
 | `DamageCooldown` | `timer`, `duration` | Prevents continuous damage |
+| `PlayerControlled` | - | Marker component (can be used for any controllable entity) |
+| `AI` | `type`, `aggroRange`, `target` | Generic AI behavior configuration |
 
-## 🎮 Demo Components (Example)
-
-| Component | Properties | Description |
-|-----------|-----------|-------------|
-| `PlayerControlled` | - | Marker for player entity (demo-specific) |
-| `AI` | `type`, `aggroRange`, `target` | AI behavior configuration (demo-specific) |
-
-**Note:** The demo components show how to extend the engine with game-specific logic. You can create your own components for your game!
+**All components are generic and reusable!** The demo game shows one way to use them (PlayerControlled for player, AI for enemies), but you can use them however you want in your game.
 
 ## 🔧 Engine Systems (Reusable)
 
